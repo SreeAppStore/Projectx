@@ -14,6 +14,17 @@ jobs:
       - run:
           name: Installing preformatted licenses.
           command: cp -r ./.circleci/licenses/ /usr/local/android-sdk-linux/
+      - run:
+          name: Installing preformatted licenses.
+          command:
+          echo Running creating .android
+          mkdir /home/ubuntu/.android
+      - run:
+          name: Installing preformatted licenses.
+          command:
+          echo Running creating .android/repositories.cfg
+          touch /home/ubuntu/.android/repositories.cfg
+
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
 #      - run:
