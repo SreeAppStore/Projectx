@@ -11,10 +11,9 @@ jobs:
 
       - checkout
 
-      -post: -cp -r ./.circleci/licenses/ $ANDROID_HOME/
-#      - run:
-#          name: Installing preformatted licenses.
-#          command: "./.circleci/build-scripts/accept-license.sh"
+      - run:
+          name: Installing preformatted licenses.
+          command: cp -r ./.circleci/licenses/ /usr/local/android-sdk-linux/
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
 #      - run:
