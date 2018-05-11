@@ -2,19 +2,20 @@ version: 2
 jobs:
   build:
     working_directory: ~/code
-    docker:
-      - image: circleci/android:api-27-alpha
-    environment:
-      ANDROID_HOME: /usr/local/android-sdk-linux
-      JVM_OPTS: -Xmx3200m
-      TERM: dumb
+#    docker:
+#      - image: circleci/android:api-27-alpha
+#    environment:
+#      ANDROID_HOME: /usr/local/android-sdk-linux
+#      JVM_OPTS: -Xmx3200m
+#      TERM: dumb
     dependencies:
-
       - checkout
-
       - run:
           name: Installing preformatted licenses.
           command: cp -r ./.circleci/licenses/ /usr/local/android-sdk-linux/
+      - run:
+          name: Installing preformatted licenses.
+          command: cp -r ./.circleci/licenses/ /opt/android/sdk/
       - run:
           name: Installing preformatted licenses.
           command:
