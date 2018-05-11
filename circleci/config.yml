@@ -7,10 +7,10 @@ jobs:
     environment:
     ANDROID_HOME: /usr/local/android-sdk-linux
       JVM_OPTS: -Xmx3200m
-#      dependencies:
-#          override:
-#              - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-27.0.3,android-27,extra-google-m2repository,extra-google-google_play_services,extra-android-support
-    steps:
+     dependencies:
+          - mkdir "$ANDROID_HOME/licenses" || true
+          - echo -e "\nd56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license"
+
       - checkout
 #      - run:
 #          name: Installing preformatted licenses.
@@ -82,3 +82,66 @@ jobs:
 #
 #      # run tests!
 #      - run: gradle test
+
+
+#version: 2.0
+#
+#cache_key: &cache_key
+#  key: jars-{{ checksum "build.gradle" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+#
+#jobs:
+#  build:
+#    working_directory: ~/SdkSearch
+#
+#    docker:
+#      - image: circleci/android:api-27-alpha
+#
+#    environment:
+#      TERM: dumb
+#
+#    steps:
+#      - checkout
+#
+#      - restore_cache:
+#          <<: *cache_key
+#
+#      - run:
+#          name: Assemble
+#          command: ./gradlew assemble
+#      - store_artifacts:
+#          path: frontend/android/build/outputs/
+#      - store_artifacts:
+#          path: frontend/chrome-extension/build/distributions/
+#      - store_artifacts:
+#          path: references/validator/build/distributions/
+#      - store_artifacts:
+#          path: build/commit-timestamp.txt
+#
+#      - run:
+#          name: Test
+#          command: |
+#            ./gradlew test
+#            mkdir -p ~/junit/
+#            find . -type f -regex ".*/build/test-results/.*xml" -exec cp --parents {} ~/junit/ \;
+#      - store_test_results:
+#          path: ~/junit
+#      - store_artifacts:
+#          path: ~/junit
+#
+#      - run:
+#          name: Android Lint
+#          command: ./gradlew :frontend:android:lint
+#      - store_artifacts:
+#          path: frontend/android/build/reports/lint-results.html
+#
+#      - save_cache:
+#          <<: *cache_key
+#          paths:
+#            - ~/.gradle/caches
+#            - ~/.gradle/wrapper
+#
+#workflows:
+#  version: 2
+#  build_and_test:
+#    jobs:
+#      - build
