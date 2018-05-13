@@ -7,19 +7,6 @@ jobs:
     working_directory: ~/workspace
 
     steps:
-
-      - run:
-          name: Lists installed targets
-          command: android list target
-          environment:
-            TERM: dumb
-
-      - run:
-          name: List available targets and other sdk modules
-          command: sdkmanager --list --include_obsolete --verbose
-          environment:
-            TERM: dumb
-
       - checkout
 
       - run:
