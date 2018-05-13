@@ -4,11 +4,7 @@ jobs:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-27-alpha
-    working_directory: ~/workspace
-
     steps:
-      - checkout
-
       - run:
           name: Unit testing
           command: ./gradlew assemble
