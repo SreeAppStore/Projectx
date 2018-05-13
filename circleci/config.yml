@@ -5,38 +5,17 @@ jobs:
     docker:
       - image: circleci/android:api-27-alpha
     environment:
-      ANDROID_HOME: /usr/local/android-sdk-linux
       JVM_OPTS: -Xmx3200m
-      TERM: dumb
     steps:
-#    dependencies:
       - checkout
-#      - run:
-#          name: Installing preformatted licenses.
-#          command: cp -r ./.circleci/licenses/ /usr/local/android-sdk-linux/
-#      - run:
-#          name: Installing preformatted licenses.
-#          command: cp -r ./.circleci/licenses/ /opt/android/sdk/
-#      - run:
-#          name: Installing preformatted licenses.
-#          command:
-#          echo Running creating .android
-#          sudo mkdir /home/ubuntu/.android
-#      - run:
-#          name: Installing preformatted licenses.
-#          command:
-#          echo Running creating .android/repositories.cfg
-#          sudo touch /home/ubuntu/.android/repositories.cfg
-
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
 #      - run:
 #         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
 #         command: sudo chmod +x ./gradlew
-
       - run:
           name: Download Dependencies
-          command: ./gradlew assemble
+          command: ./gradlew androidDependencies
       - save_cache:
           paths:
             - ~/.gradle
@@ -49,8 +28,8 @@ jobs:
           destination: reports
       - store_test_results:
           path: app/build/test-results
-      -    artifacts:
-               - /home/ubuntu/ProjectX/app/build/outputs/apk/
+
+
 
 
 # Java Gradle CircleCI 2.0 configuration file
