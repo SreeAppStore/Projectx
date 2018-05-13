@@ -1,159 +1,159 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-27-alpha
+    environment:
+      ANDROID_HOME: /usr/local/android-sdk-linux
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+    dependencies:
+      - checkout
+#      - run:
+#          name: Installing preformatted licenses.
+#          command: cp -r ./.circleci/licenses/ /usr/local/android-sdk-linux/
+#      - run:
+#          name: Installing preformatted licenses.
+#          command: cp -r ./.circleci/licenses/ /opt/android/sdk/
+#      - run:
+#          name: Installing preformatted licenses.
+#          command:
+#          echo Running creating .android
+#          sudo mkdir /home/ubuntu/.android
+#      - run:
+#          name: Installing preformatted licenses.
+#          command:
+#          echo Running creating .android/repositories.cfg
+#          sudo touch /home/ubuntu/.android/repositories.cfg
+
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
+         command: sudo chmod +x ./gradlew
+
+      - run:
+          name: Download Dependencies
+          command: ./gradlew assemble
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Run Tests
+          command: ./gradlew lint test
+      - store_artifacts:
+          path: app/build/reports
+          destination: reports
+      - store_test_results:
+          path: app/build/test-results
+      -    artifacts:
+               - /home/ubuntu/ProjectX/app/build/outputs/apk/
+
+
+# Java Gradle CircleCI 2.0 configuration file
+
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+
 #version: 2
 #jobs:
 #  build:
-#    working_directory: ~/code
 #    docker:
-#      - image: circleci/android:api-27-alpha
+#      # specify the version you desire here
+#      - image: circleci/openjdk:8-jdk
+#
+#      # Specify service dependencies here if necessary
+#      # CircleCI maintains a library of pre-built images
+#      # documented at https://circleci.com/docs/2.0/circleci-images/
+#      # - image: circleci/postgres:9.4
+#
+#    working_directory: ~/code
+#
 #    environment:
-#      ANDROID_HOME: /usr/local/android-sdk-linux
+#      # Customize the JVM maximum heap limit
 #      JVM_OPTS: -Xmx3200m
 #      TERM: dumb
-#    dependencies:
+#
+#    steps:
 #      - checkout
-##      - run:
-##          name: Installing preformatted licenses.
-##          command: cp -r ./.circleci/licenses/ /usr/local/android-sdk-linux/
-##      - run:
-##          name: Installing preformatted licenses.
-##          command: cp -r ./.circleci/licenses/ /opt/android/sdk/
-##      - run:
-##          name: Installing preformatted licenses.
-##          command:
-##          echo Running creating .android
-##          sudo mkdir /home/ubuntu/.android
-##      - run:
-##          name: Installing preformatted licenses.
-##          command:
-##          echo Running creating .android/repositories.cfg
-##          sudo touch /home/ubuntu/.android/repositories.cfg
 #
+#      # Download and cache dependencies
 #      - restore_cache:
-#          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-#      - run:
-#         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
-#         command: sudo chmod +x ./gradlew
+#          keys:
+#          - v1-dependencies-{{ checksum "build.gradle" }}
+#          # fallback to using the latest cache if no exact match is found
+#          - v1-dependencies-
 #
-#      - run:
-#          name: Download Dependencies
-#          command: ./gradlew assemble
+#      - run: gradle dependencies
+#
 #      - save_cache:
 #          paths:
 #            - ~/.gradle
-#          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+#          key: v1-dependencies-{{ checksum "build.gradle" }}
+#
+#      # run tests!
+#      - run: gradle test
+
+
+#version: 2.0
+#
+#cache_key: &cache_key
+#  key: jars-{{ checksum "build.gradle" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+#
+#jobs:
+#  build:
+#    working_directory: ~/SdkSearch
+#
+#    docker:
+#      - image: circleci/android:api-27-alpha
+#
+#    environment:
+#      TERM: dumb
+#
+#    steps:
+#      - checkout
+#
+#      - restore_cache:
+#          <<: *cache_key
+#
 #      - run:
-#          name: Run Tests
-#          command: ./gradlew lint test
+#          name: Assemble
+#          command: ./gradlew assemble
 #      - store_artifacts:
-#          path: app/build/reports
-#          destination: reports
+#          path: frontend/android/build/outputs/
+#      - store_artifacts:
+#          path: frontend/chrome-extension/build/distributions/
+#      - store_artifacts:
+#          path: references/validator/build/distributions/
+#      - store_artifacts:
+#          path: build/commit-timestamp.txt
+#
+#      - run:
+#          name: Test
+#          command: |
+#            ./gradlew test
+#            mkdir -p ~/junit/
+#            find . -type f -regex ".*/build/test-results/.*xml" -exec cp --parents {} ~/junit/ \;
 #      - store_test_results:
-#          path: app/build/test-results
-#      -    artifacts:
-#               - /home/ubuntu/ProjectX/app/build/outputs/apk/
+#          path: ~/junit
+#      - store_artifacts:
+#          path: ~/junit
 #
+#      - run:
+#          name: Android Lint
+#          command: ./gradlew :frontend:android:lint
+#      - store_artifacts:
+#          path: frontend/android/build/reports/lint-results.html
 #
-## Java Gradle CircleCI 2.0 configuration file
+#      - save_cache:
+#          <<: *cache_key
+#          paths:
+#            - ~/.gradle/caches
+#            - ~/.gradle/wrapper
 #
-## Check https://circleci.com/docs/2.0/language-java/ for more details
-#
-##version: 2
-##jobs:
-##  build:
-##    docker:
-##      # specify the version you desire here
-##      - image: circleci/openjdk:8-jdk
-##
-##      # Specify service dependencies here if necessary
-##      # CircleCI maintains a library of pre-built images
-##      # documented at https://circleci.com/docs/2.0/circleci-images/
-##      # - image: circleci/postgres:9.4
-##
-##    working_directory: ~/code
-##
-##    environment:
-##      # Customize the JVM maximum heap limit
-##      JVM_OPTS: -Xmx3200m
-##      TERM: dumb
-##
-##    steps:
-##      - checkout
-##
-##      # Download and cache dependencies
-##      - restore_cache:
-##          keys:
-##          - v1-dependencies-{{ checksum "build.gradle" }}
-##          # fallback to using the latest cache if no exact match is found
-##          - v1-dependencies-
-##
-##      - run: gradle dependencies
-##
-##      - save_cache:
-##          paths:
-##            - ~/.gradle
-##          key: v1-dependencies-{{ checksum "build.gradle" }}
-##
-##      # run tests!
-##      - run: gradle test
-#
-#
-##version: 2.0
-##
-##cache_key: &cache_key
-##  key: jars-{{ checksum "build.gradle" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-##
-##jobs:
-##  build:
-##    working_directory: ~/SdkSearch
-##
-##    docker:
-##      - image: circleci/android:api-27-alpha
-##
-##    environment:
-##      TERM: dumb
-##
-##    steps:
-##      - checkout
-##
-##      - restore_cache:
-##          <<: *cache_key
-##
-##      - run:
-##          name: Assemble
-##          command: ./gradlew assemble
-##      - store_artifacts:
-##          path: frontend/android/build/outputs/
-##      - store_artifacts:
-##          path: frontend/chrome-extension/build/distributions/
-##      - store_artifacts:
-##          path: references/validator/build/distributions/
-##      - store_artifacts:
-##          path: build/commit-timestamp.txt
-##
-##      - run:
-##          name: Test
-##          command: |
-##            ./gradlew test
-##            mkdir -p ~/junit/
-##            find . -type f -regex ".*/build/test-results/.*xml" -exec cp --parents {} ~/junit/ \;
-##      - store_test_results:
-##          path: ~/junit
-##      - store_artifacts:
-##          path: ~/junit
-##
-##      - run:
-##          name: Android Lint
-##          command: ./gradlew :frontend:android:lint
-##      - store_artifacts:
-##          path: frontend/android/build/reports/lint-results.html
-##
-##      - save_cache:
-##          <<: *cache_key
-##          paths:
-##            - ~/.gradle/caches
-##            - ~/.gradle/wrapper
-##
-##workflows:
-##  version: 2
-##  build_and_test:
-##    jobs:
-##      - build
+#workflows:
+#  version: 2
+#  build_and_test:
+#    jobs:
+#      - build
