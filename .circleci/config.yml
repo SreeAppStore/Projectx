@@ -21,7 +21,10 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Distribute via Beta
-          command: bundle exec fastlane android beta
+          command: |
+              - gem install bundler
+              - bundle install
+              - bundle exec fastlane android beta
 #           ./gradlew clean
 #           ./gradlew assembleRelease
 #           ./gradlew crashlyticsUploadDistributionRelease
