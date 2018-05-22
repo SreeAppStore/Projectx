@@ -20,11 +20,11 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-          name: Build Debug
-          command: |
-           ./gradlew clean
-           ./gradlew assembleRelease
-           ./gradlew crashlyticsUploadDistributionRelease
+          name: Distribute via Beta
+          command: bundle exec fastlane android beta
+#           ./gradlew clean
+#           ./gradlew assembleRelease
+#           ./gradlew crashlyticsUploadDistributionRelease
       - store_artifacts:
           path: app/build/outputs/apk/debug/app-release.apk
           destination: app-release.apk
