@@ -22,9 +22,20 @@ android {
         applicationId "com.labs.projectx"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 6
-        versionName "1.0"
-//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    flavorDimensions "tier"
+    productFlavors {
+        dev {
+            dimension "tier"
+            applicationIdSuffix ".dev"
+            versionCode 7
+            versionName "1.0"
+        }
+        production {
+            dimension "tier"
+            versionCode 0
+            versionName "1.0"
+        }
     }
     signingConfigs {
         release {
