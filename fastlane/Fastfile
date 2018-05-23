@@ -29,7 +29,7 @@ platform :android do
    # gradle(task: "crashlyticsUploadDistributionDevRelease")
      crashlytics(
        api_token: 'a8b41b25dd79710d84ecc62b36dba9131b7f3d06',
-       build_secret: '1f1f01a6fb84ca1644b2b0be2db6f4312daed7aad9f393e1dc056106b77db34e',
+       build_secret: '1f1f01a6fb84ca1644b2b0be2db6f4312daed7aad9f393e1dc056106b77db34e'
      )
   
     # sh "your_script.sh"
